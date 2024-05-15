@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Personal RateIT</string>
+    <string name="your_rate">Ваш рейтинг</string>
+    <string name="snils_input">Введите свой СНИЛС</string>
+    <string name="snils">СНИЛС</string>
+    <string name="to_know_rate">Узнать место</string>
+    <string name="specializations_list">Список специальностей</string>
+    <string name="fullname">ФИО:</string>
+    <string name="specialization">Специальность: </string>
+    <string name="rate">Место:</string>
+    <string name="gpa">Средний бал:</string>
+    <string name="send_documents_date">Дата подачи документов:</string>
+    <string name="empty_specializations_list">"Список специальностей пуст"</string>
+    <string name="slots_count">Колисчество мест:</string>
+    <string name="learning_period">Срок обучения:</string>
+    <string name="back">Назад:</string>
+</resources>
