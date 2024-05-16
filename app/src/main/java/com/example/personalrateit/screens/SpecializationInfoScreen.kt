@@ -50,7 +50,7 @@ fun SpecializationInfoScreen(specialization: List<String>) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.verticalScroll(ScrollState(0)),
             verticalArrangement = Arrangement.SpaceAround){
-            TextComponent(value = specializationTitle, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 32)
+            TextComponent(value = specializationTitle, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, fontSize = 30)
             TextComponent(value = specializationCode, textAlign = TextAlign.Center, fontSize = 24)
             TextComponent(value = "${stringResource(id = R.string.slots_count)} $specializationSlots", textAlign = TextAlign.Start, fontSize = 20)
             TextComponent(value = "${stringResource(id = R.string.learning_period)} $specializationLearningTime", textAlign = TextAlign.Start, fontSize = 20)

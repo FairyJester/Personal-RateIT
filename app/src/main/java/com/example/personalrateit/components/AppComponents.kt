@@ -29,9 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +48,7 @@ import com.example.quickidenti.ui.theme.BgColor
 import com.example.quickidenti.ui.theme.Primary
 import com.example.quickidenti.ui.theme.TextColor
 import com.example.quickidenti.ui.theme.White
+import kotlin.math.absoluteValue
 
 @Composable
 fun TextComponent(value: String,
@@ -71,6 +76,7 @@ fun TextComponent(value: String,
 @Composable
 fun TextFieldComponent(
     labelValue: String,
+    mask: MaskVisualTransformation = MaskVisualTransformation(""),
     painterResource: Painter?,
     textValue: String,
     onValueChange: (String) -> Unit,
@@ -97,20 +103,21 @@ fun TextFieldComponent(
     )
     else
         OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(4.dp)),
-        value = textValue,
-        label = { Text(text = labelValue) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+            modifier = Modifier
+        .fillMaxWidth()
+        .clip(shape = RoundedCornerShape(4.dp)),
+            value = textValue,
+            label = { Text(text = labelValue) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor =  Primary,
             focusedLabelColor = Primary,
             cursorColor = Primary,
-            backgroundColor = BgColor
-        ),
-        keyboardOptions = keyboardOptions,
-        singleLine = true,
-        onValueChange = onValueChange
+            backgroundColor = BgColor),
+            placeholder = { Text(text = "XXX-XXX-XXX XX") },
+            visualTransformation = mask,
+            keyboardOptions = keyboardOptions,
+            singleLine = true,
+            onValueChange = onValueChange
     )
 }
 
@@ -185,6 +192,41 @@ fun PersonView(id: Int,
                 fontSize = 20.sp,
                 modifier = Modifier.weight(1f)
             )
+        }
+    }
+}
+
+class MaskVisualTransformation(private val mask: String): VisualTransformation {
+    private val specialSymbolsIndices = mask.indices.filter { mask[it] != 'X' }
+
+    override fun filter(text: AnnotatedString): TransformedText {
+        var out = ""
+        var maskIndex = 0
+        text.forEach { char ->
+            while (specialSymbolsIndices.contains(maskIndex)) {
+                out += mask[maskIndex]
+                maskIndex++
+            }
+            out += char
+            maskIndex++
+        }
+        return TransformedText(AnnotatedString(out), offsetTranslator())
+    }
+
+    private fun offsetTranslator() = object: OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int {
+            val offsetValue = offset.absoluteValue
+            if (offsetValue == 0) return 0
+            var numberOfHashtags = 0
+            val masked = mask.takeWhile {
+                if (it == 'X') numberOfHashtags++
+                numberOfHashtags < offsetValue
+            }
+            return masked.length + 1
+        }
+
+        override fun transformedToOriginal(offset: Int): Int {
+            return mask.take(offset.absoluteValue).count { it == 'X' }
         }
     }
 }

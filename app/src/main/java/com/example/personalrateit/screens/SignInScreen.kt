@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,7 @@ import com.example.personalrateit.navigation.PersonalRateITAppRouter
 import com.example.personalrateit.navigation.Screen
 import com.example.personalrateit.operations.applicantData
 import com.example.quickidenti.components.ButtonComponent
+import com.example.quickidenti.components.MaskVisualTransformation
 import com.example.quickidenti.components.TextComponent
 import com.example.quickidenti.components.TextFieldComponent
 import kotlinx.coroutines.CoroutineScope
@@ -48,8 +51,9 @@ fun SignInScreen(){
     val snils = remember {mutableStateOf("")}
     val context = LocalContext.current
     val applicantApi = retrofit.create(Applicant::class.java)
-
+    val mask = MaskVisualTransformation("XXX-XXX-XXX XX")
     val applicantNotFound = remember { mutableStateOf(false) }
+    val maxTextFieldLength = 11
 
     Surface(
         modifier = Modifier
@@ -77,7 +81,9 @@ fun SignInScreen(){
                     labelValue = stringResource(id = R.string.snils),
                     textValue = snils.value,
                     painterResource = null,
-                    onValueChange = { snils.value = it }
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    onValueChange = { if(it.length <= maxTextFieldLength) { snils.value = it } },
+                    mask = mask
                 )
 
             }
@@ -88,7 +94,13 @@ fun SignInScreen(){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             try {
-                                val applicantData = applicantApi.signIn(snils.value)
+                                val snilsRequest = "${snils.value.substring(0,3)}-" +
+                                        "${snils.value.substring(3,6)}-" +
+                                        "${snils.value.substring(6,9)} " +
+                                        snils.value.substring(9,11)
+                                Log.i("snils", snilsRequest)
+                                Log.i("snils2", snils.value)
+                                val applicantData = applicantApi.signIn(snilsRequest)
                                 applicantData(applicantData)
                                 PersonalRateITAppRouter.navigateTo(Screen.InfoScreen, true)
                             }catch (notFound: retrofit2.HttpException){
