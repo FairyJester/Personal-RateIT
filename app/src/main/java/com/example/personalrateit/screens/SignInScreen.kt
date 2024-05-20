@@ -52,7 +52,6 @@ fun SignInScreen(){
     val context = LocalContext.current
     val applicantApi = retrofit.create(Applicant::class.java)
     val mask = MaskVisualTransformation("XXX-XXX-XXX XX")
-    val applicantNotFound = remember { mutableStateOf(false) }
     val maxTextFieldLength = 11
 
     Surface(
@@ -94,17 +93,21 @@ fun SignInScreen(){
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             try {
-                                val snilsRequest = "${snils.value.substring(0,3)}-" +
-                                        "${snils.value.substring(3,6)}-" +
-                                        "${snils.value.substring(6,9)} " +
-                                        snils.value.substring(9,11)
-                                Log.i("snils", snilsRequest)
-                                Log.i("snils2", snils.value)
-                                val applicantData = applicantApi.signIn(snilsRequest)
-                                applicantData(applicantData)
-                                PersonalRateITAppRouter.navigateTo(Screen.InfoScreen, true)
+                                try {
+                                    val snilsRequest = "${snils.value.substring(0, 3)}-" +
+                                            "${snils.value.substring(3, 6)}-" +
+                                            "${snils.value.substring(6, 9)} " +
+                                            snils.value.substring(9, 11)
+                                    Log.i("snils", snilsRequest)
+                                    Log.i("snils2", snils.value)
+                                    val applicantData = applicantApi.signIn(snilsRequest)
+                                    applicantData(applicantData)
+                                    PersonalRateITAppRouter.navigateTo(Screen.InfoScreen, true)
+                                }catch (string: StringIndexOutOfBoundsException){
+                                    Log.i("incorrectInput", "incorrect snils input")
+                                    exeptions(context, "applicant_not_found")
+                                }
                             }catch (notFound: retrofit2.HttpException){
-                                applicantNotFound.value = true
                                 Log.i("applicant_not_found", "applicant not found")
                                 exeptions(context, "applicant_not_found")
                             }
