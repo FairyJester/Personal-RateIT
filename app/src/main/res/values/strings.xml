@@ -11,7 +11,7 @@
     <string name="gpa">Средний бал:</string>
     <string name="send_documents_date">Дата подачи документов:</string>
     <string name="empty_specializations_list">"Список специальностей пуст"</string>
-    <string name="slots_count">Колисчество мест:</string>
+    <string name="slots_count">Количество мест:</string>
     <string name="learning_period">Срок обучения:</string>
     <string name="back">Назад:</string>
 </resources>
