@@ -3,23 +3,17 @@ package com.example.personalrateit.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +26,7 @@ import com.example.personalrateit.data.Specialization
 import com.example.personalrateit.dto.specializations.SpecializationGetDTO
 import com.example.personalrateit.exeptions.exeptions
 import com.example.personalrateit.navigation.PersonalRateITAppRouter
+import com.example.quickidenti.components.LoadingComponent
 import com.example.quickidenti.components.SimpleLazyColumnScreen
 import com.example.quickidenti.components.TextComponent
 import kotlinx.coroutines.CoroutineScope
@@ -101,25 +96,7 @@ fun SpecializationsListScreen(){
         }
     }
     else{
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(28.dp)
-        ) {
-
-            Column(modifier = Modifier
-                .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(
-                    painter= painterResource(R.drawable.loading),
-                    contentDescription = "Loading",
-                    modifier = Modifier
-                        .height(48.dp)
-                        .width(48.dp))
-            }
-        }
+        LoadingComponent()
     }
     BackHandler(enabled = true) {
         PersonalRateITAppRouter.navigateTo(PersonalRateITAppRouter.historyScreenList[PersonalRateITAppRouter.lastHistoryIndex.value], false)
